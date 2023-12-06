@@ -11,6 +11,21 @@ import com.squareup.picasso.Picasso
 
 class MyPostAdapter (private val context: MYPageFragment) : RecyclerView.Adapter<MyPostViewHolder>() {
     private var datos: List<MyPost> = ArrayList()
+    private var onDeleteClickListener: OnDeleteClickListener? = null
+
+
+    fun removeItem(position: Int) {
+        datos.toMutableList().removeAt(position)
+        notifyDataSetChanged()
+    }
+    interface OnDeleteClickListener {
+        fun onDeleteClick(postId: Int)
+    }
+
+    fun setOnDeleteClickListener(listener: MYPageFragment) {
+        onDeleteClickListener = listener
+    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyPostViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.my_post_fila, parent, false)
@@ -47,6 +62,11 @@ class MyPostAdapter (private val context: MYPageFragment) : RecyclerView.Adapter
         } else {
             holder.ivMyImagenPost.visibility = View.GONE
         }
+
+        holder.bDelete.setOnClickListener {
+            onDeleteClickListener?.onDeleteClick(datos[position].idmypost)
+        }
+
     }
 
 

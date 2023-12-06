@@ -1,7 +1,6 @@
 package com.example.connu.Fragments
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -15,17 +14,14 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import com.example.connu.MainPageActivity
 import com.example.connu.MyPost
 import com.example.connu.MyPostAdapter
-import com.example.connu.Post
-import com.example.connu.PostAdapter
 import com.example.connu.R
 import com.google.firebase.storage.FirebaseStorage
 import org.json.JSONArray
 import org.json.JSONObject
 
-class MYPageFragment : Fragment() {
+class MYPageFragment : Fragment(), MyPostAdapter.OnDeleteClickListener {
 
     private lateinit var myadapterpost : MyPostAdapter
     private lateinit var storage : FirebaseStorage
@@ -49,8 +45,8 @@ class MYPageFragment : Fragment() {
         val lista : RecyclerView = view.findViewById(R.id.rvMypage)
 
         myadapterpost = MyPostAdapter(this)
-
         lista.adapter = myadapterpost
+        myadapterpost.setOnDeleteClickListener(this)
 
         val linearLayoutManager: RecyclerView.LayoutManager =
             LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
@@ -58,6 +54,41 @@ class MYPageFragment : Fragment() {
         lista.layoutManager = linearLayoutManager
         consultarMiLista()
     }
+
+    override fun onDeleteClick(postId: Int) {
+        val url = "http://192.168.1.67/connu/eliminarPost.php"
+
+        val requestQueue = Volley.newRequestQueue(requireContext())
+        val mapa = mutableMapOf<String, Any?>()
+
+        mapa.put("idPost", postId)
+
+        val parametros: JSONObject = JSONObject(mapa)
+
+        val request: JsonObjectRequest = JsonObjectRequest(
+            Request.Method.POST,
+            url,
+            parametros,
+            Response.Listener { response ->
+                if (response.getBoolean("exito")) {
+                    // La publicación se eliminó con éxito, puedes actualizar tu RecyclerView si es necesario
+                    // También puedes mostrar un mensaje de éxito o realizar otras acciones
+                    Toast.makeText(requireContext(), response.getString("msj"), Toast.LENGTH_SHORT).show()
+                } else {
+                    // Ocurrió un error al eliminar la publicación
+                    Toast.makeText(requireContext(), "Error al eliminar la publicación", Toast.LENGTH_SHORT).show()
+                }
+            },
+            Response.ErrorListener { error ->
+                Log.e("MYPageFragment", error.message.toString())
+            }
+        )
+
+        requestQueue.add(request)
+
+        myadapterpost.removeItem(postId)
+    }
+
 
     fun consultarMiLista(){
         val sharedPreferences = requireContext().getSharedPreferences("mi_pref", Context.MODE_PRIVATE)
@@ -114,5 +145,6 @@ class MYPageFragment : Fragment() {
             myadapterpost.llenar(datos)
         }
     }
+
 
 }
