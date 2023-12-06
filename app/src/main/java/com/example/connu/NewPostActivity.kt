@@ -1,16 +1,11 @@
 package com.example.connu
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.Toast
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
@@ -18,6 +13,10 @@ import com.android.volley.toolbox.Volley
 import org.json.JSONObject
 
 class NewPostActivity : AppCompatActivity() {
+
+    private lateinit var spinner: Spinner
+    private lateinit var editText: EditText
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_post)
@@ -33,52 +32,65 @@ class NewPostActivity : AppCompatActivity() {
         val tipoUsuario = sharedPreferences.getString("tipoUsuario", "indefinido")
         val idUsuario = sharedPreferences.getInt("idUsuario", -1)
 
-        val spinner: Spinner = findViewById(R.id.spNewPType)
-        val editText: EditText = findViewById(R.id.etContent)
+        spinner = findViewById(R.id.spNewPType)
+        editText = findViewById(R.id.etContent)
 
         val opciones: List<String> = when (tipoUsuario) {
-            "General" -> listOf("Proveedor de servicios")
-            "Prestador" -> listOf("Proveedor de servicios", "Buscador de servicios")
+            "General" -> listOf("Buscador de servicios")
+            "Prestador" -> listOf("Buscador de servicios", "Proveedor de servicios")
             else -> emptyList()
         }
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, opciones)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
+
+        val newPostButton: Button = findViewById(R.id.bNewPost)
+        newPostButton.setOnClickListener {
+            val seleccion = spinner.selectedItem.toString()
+            val opc = if (seleccion == "Proveedor de servicios") 2 else 1
+            val content = editText.text.toString()
+
+            if (content.isNotEmpty()) {
+                nuevoPost(opc, idUsuario, content, "")
+            } else {
+                Toast.makeText(this, "El contenido no puede estar vacío", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun nuevoPost(
-        name: String,
-        mail: String,
-        pass: String,
-        sex: Int
+        opc: Int,
+        iduser: Int,
+        content: String,
+        img: String
     ) {
-        val url = "http://192.168.1.67/connu/nuevoPost.php";
+        val url = "http://192.168.1.67/connu/nuevoPost.php"
 
         val requestQueue = Volley.newRequestQueue(this)
         val mapa = mutableMapOf<String, Any?>()
 
-        mapa.put("name", name)
-        mapa.put("mail", mail)
+        mapa.put("tipopost", opc)
+        mapa.put("iduser", iduser)
+        mapa.put("content", content)
+        mapa.put("img", img)
 
-        mapa.put("pass", pass)
-        mapa.put("sex", sex)
+        val parametros: JSONObject = JSONObject(mapa)
 
-        val parametros : JSONObject = JSONObject(mapa)
-
-        val request : JsonObjectRequest = JsonObjectRequest(
+        val request: JsonObjectRequest = JsonObjectRequest(
             Request.Method.POST,
             url,
             parametros,
             Response.Listener { response ->
-                if(response.getBoolean("exito")){
+                if (response.getBoolean("exito")) {
+                    // Actualizar el fragmento o realizar cualquier acción necesaria
                     finish()
                 } else {
                     Toast.makeText(this, "Error en el servicio web", Toast.LENGTH_SHORT).show()
                 }
             },
             Response.ErrorListener { error ->
-                Log.e("RegisterActivity", error.message.toString())
+                Log.e("NewPostActivity", "Error en la solicitud HTTP: ${error.message}")
             }
         )
 
