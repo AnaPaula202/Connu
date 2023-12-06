@@ -12,8 +12,8 @@ class PostViewHolder : RecyclerView.ViewHolder {
     lateinit var tvTipoPost : TextView
     lateinit var tvLikes : TextView
     lateinit var ivImagenPost : ImageView
-    lateinit var ivImagenPerfil: ImageView
     lateinit var bLike : ImageView
+    lateinit var tvSex : TextView
 
     lateinit var tvContact : TextView
     constructor(itemView: View) : super(itemView){
@@ -22,8 +22,8 @@ class PostViewHolder : RecyclerView.ViewHolder {
         tvCuerpoPost = itemView.findViewById(R.id.tvPMessage)
         tvTipoPost = itemView.findViewById(R.id.tvPostType)
         tvLikes = itemView.findViewById(R.id.tvLikesAmount)
+        tvSex = itemView.findViewById(R.id.tvSexP)
         ivImagenPost = itemView.findViewById(R.id.ivPImg)
-        ivImagenPerfil = itemView.findViewById(R.id.ivImgPostP)
         bLike = itemView.findViewById(R.id.bLike)
 
         tvContact = itemView.findViewById(R.id.tvPostContact)

@@ -8,4 +8,5 @@ class Post {
     var usermail = ""
     var likes = ""
     var ptype = ""
+    var usersex = 0
 }

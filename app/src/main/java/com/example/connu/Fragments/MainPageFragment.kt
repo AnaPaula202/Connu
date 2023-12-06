@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,14 +23,13 @@ class MainPageFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        consultarLista()
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        var view = inflater
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_main_page, container, false)
 
@@ -50,11 +48,12 @@ class MainPageFragment : Fragment() {
             LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
 
         lista.layoutManager = linearLayoutManager
+        consultarLista()
     }
 
     fun consultarLista(){
         val requestQueue = Volley.newRequestQueue(requireActivity())
-        val url : String = "http://10.200.23.193/connu/listarPosts.php"
+        val url : String = "http://192.168.1.67/connu/listarPosts.php"
 
         val request : JsonObjectRequest = JsonObjectRequest(
             Request.Method.GET,
@@ -86,8 +85,10 @@ class MainPageFragment : Fragment() {
                 post.img = registro.getString("img1")
                 post.user = registro.getString("nombre")
                 post.usermail = registro.getString("correo")
-                post.ptype = registro.getString("tipo_idtipo")
+                post.ptype = registro.getString("punombre")
                 post.likes = registro.getString("likes")
+
+                post.usersex = registro.getInt("sexo_idsexo")
 
                 datos.add(post)
             }
