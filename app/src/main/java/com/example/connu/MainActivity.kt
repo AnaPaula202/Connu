@@ -1,5 +1,6 @@
 package com.example.connu
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity() {
             val correo: String = etLMail.text.toString()
             val contrasena: String = etLPass.text.toString()
 
-            val url = "http://10.200.23.193/connu/login.php";
+            val url = "http://10.200.23.221/connu/login.php";
 
             val requestQueue = Volley.newRequestQueue(this)
             val mapa = mutableMapOf<String, Any?>()
@@ -60,6 +61,14 @@ class MainActivity : AppCompatActivity() {
                 parametros,
                 Response.Listener { response ->
                     if(response.getBoolean("exito")){
+
+                        val sharedPreferences = getSharedPreferences("mi_pref", Context.MODE_PRIVATE)
+                        val editor = sharedPreferences.edit()
+
+                        // Obtener el idUsuario del JSON response y guardarlo en SharedPreferences
+                        val idUsuario = response.getInt("idUsuario")
+                        editor.putInt("idUsuario", idUsuario)
+                        editor.apply()
                         val login = Intent(this, MainPageActivity::class.java)
                         startActivity(login)
                     } else {
