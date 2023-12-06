@@ -61,12 +61,16 @@ class MainPageFragment : Fragment() {
             LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
 
         lista.layoutManager = linearLayoutManager
-        consultarLista()
+
 
         // Datos para el spinner de Tipo de publicación
         val tipoPublicacion = arrayOf("Tipo de publicación", "Postulación", "Contratación")
 
-        val adapterTipoPublicacion = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, tipoPublicacion)
+        val adapterTipoPublicacion = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            tipoPublicacion
+        )
         adapterTipoPublicacion.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         sFilterMypage.adapter = adapterTipoPublicacion
 
@@ -96,8 +100,6 @@ class MainPageFragment : Fragment() {
                 // Si no se selecciona nada, cargar todas las publicaciones
                 consultarLista("")
             }
-
-
         }
     }
 
@@ -113,7 +115,11 @@ class MainPageFragment : Fragment() {
                 procesarLista(response)
             },
             Response.ErrorListener { error ->
-                Toast.makeText(requireContext(), "Error: $error", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Error: $error",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         )
 
