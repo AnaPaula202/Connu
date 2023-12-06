@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "430454581260",
+    "project_id": "connu-87bc5",
+    "storage_bucket": "connu-87bc5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:430454581260:android:32545f0deabe8e1311e629",
+        "android_client_info": {
+          "package_name": "com.example.connu"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcCgt1jxGy3C6LD4BIv8GdyOhdnB6uWqM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

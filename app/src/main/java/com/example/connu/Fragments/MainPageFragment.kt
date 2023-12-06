@@ -14,16 +14,18 @@ import com.android.volley.toolbox.Volley
 import com.example.connu.Post
 import com.example.connu.PostAdapter
 import com.example.connu.R
+import com.google.firebase.storage.FirebaseStorage
 import org.json.JSONArray
 import org.json.JSONObject
 
 
 class MainPageFragment : Fragment() {
     private lateinit var adapterpost : PostAdapter
+    private lateinit var storage : FirebaseStorage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        storage = FirebaseStorage.getInstance()
     }
 
     override fun onCreateView(
@@ -80,15 +82,12 @@ class MainPageFragment : Fragment() {
 
                 val post = Post()
 
+                post.user = registro.getString("nombre")
                 post.idpost = registro.getInt("idpublicacion")
                 post.content = registro.getString("contenido")
                 post.img = registro.getString("img1")
-                post.user = registro.getString("nombre")
-                post.usermail = registro.getString("correo")
                 post.ptype = registro.getString("punombre")
                 post.likes = registro.getString("likes")
-
-                post.usersex = registro.getInt("sexo_idsexo")
 
                 datos.add(post)
             }
@@ -96,7 +95,5 @@ class MainPageFragment : Fragment() {
             adapterpost.llenar(datos)
         }
     }
-
-
 
 }

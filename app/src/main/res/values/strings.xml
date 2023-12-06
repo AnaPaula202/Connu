@@ -71,6 +71,11 @@
     <string name="my_posts">Mis publicaciones</string>
     <string name="upgrade">Convertirse en Prestador de Servicios</string>
     <string name="profile_type">"Tipo de perfil: "</string>
+    <string name="delete">Eliminar</string>
+    <string name="edit">Editar</string>
+    <string name="content">Contenido</string>
+    <string name="type">Tipo de publicación</string>
+    <string name="new_post_img">Insertar Imagen (opcional)</string>
 
     <string-array name="gender_options">
         <item>Femenino</item>
