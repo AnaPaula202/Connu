@@ -45,10 +45,29 @@ class MyPostAdapter (private val context: MYPageFragment) : RecyclerView.Adapter
         holder.tvMyLikes.text = post.mylikes
         holder.tvMyTipoPost.text = post.myptype
 
-        if (post.myimg.isNotEmpty()) {
+        val imageUrl = post.myimg // Debes asegurarte de tener un atributo en tu modelo MyPost que almacene el enlace de la imagen
+
+
+        /*if (post.myimg.isNotEmpty()) {
             // Concatenar la URL base de Firebase Storage con la ruta relativa
             val imageUrl = "https://firebasestorage.googleapis.com/v0/b/connu-87bc5.appspot.com/o/posts%2F318889-jugra.jpg?alt=media&token=86955617-f69f-45c0-977e-5455a3fa96bb"
 
+            Picasso.get().load(imageUrl).into(holder.ivMyImagenPost, object : Callback {
+                override fun onSuccess() {
+                    holder.ivMyImagenPost.visibility = View.VISIBLE
+                }
+
+                override fun onError(e: Exception?) {
+                    holder.ivMyImagenPost.visibility = View.GONE
+                    Log.e("Picasso", "Error loading image", e)
+                }
+            })
+        } else {
+            holder.ivMyImagenPost.visibility = View.GONE
+        }*/
+
+        if (imageUrl.isNotEmpty()) {
+            // Cargar imagen usando Picasso
             Picasso.get().load(imageUrl).into(holder.ivMyImagenPost, object : Callback {
                 override fun onSuccess() {
                     holder.ivMyImagenPost.visibility = View.VISIBLE
