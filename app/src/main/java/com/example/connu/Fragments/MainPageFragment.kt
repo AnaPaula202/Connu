@@ -4,6 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +24,7 @@ import org.json.JSONObject
 
 
 class MainPageFragment : Fragment() {
+    private lateinit var sFilterMypage: Spinner
     private lateinit var adapterpost : PostAdapter
     private lateinit var storage : FirebaseStorage
 
@@ -34,6 +39,12 @@ class MainPageFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_main_page, container, false)
+
+        val view = inflater.inflate(R.layout.fragment_main_page, container, false)
+
+        sFilterMypage = view.findViewById(R.id.sFilterMypage) // Reemplaza "your_spinner_id" con el ID de tu Spinner en el layout
+
+        return view
 
     }
 
@@ -51,13 +62,50 @@ class MainPageFragment : Fragment() {
 
         lista.layoutManager = linearLayoutManager
         consultarLista()
+
+        // Datos para el spinner de Tipo de publicación
+        val tipoPublicacion = arrayOf("Tipo de publicación", "Postulación", "Contratación")
+
+        val adapterTipoPublicacion = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, tipoPublicacion)
+        adapterTipoPublicacion.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        sFilterMypage.adapter = adapterTipoPublicacion
+
+        // Listener para el evento de cambio en el Spinner
+        sFilterMypage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val selectedItem = parent?.getItemAtPosition(position).toString()
+
+                // Lógica para enviar el índice seleccionado al método de consulta
+                val indexToSend = when (selectedItem) {
+                    "Tipo de publicación" -> "" // Carga todas las publicaciones
+                    "Postulación" -> "1"
+                    "Contratación" -> "2"
+                    else -> ""
+                }
+
+                // Llamar a la consulta con el índice seleccionado o vacío para cargar todo
+                consultarLista(indexToSend)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Si no se selecciona nada, cargar todas las publicaciones
+                consultarLista("")
+            }
+
+
+        }
     }
 
-    fun consultarLista(){
+    fun consultarLista(indexToSend: String) {
         val requestQueue = Volley.newRequestQueue(requireActivity())
-        val url : String = "http://192.168.1.67/connu/listarPosts.php"
+        val url: String = "http://192.168.1.67/connu/listarPostsCategoria.php?index=$indexToSend"
 
-        val request : JsonObjectRequest = JsonObjectRequest(
+        val request: JsonObjectRequest = JsonObjectRequest(
             Request.Method.GET,
             url,
             null,
@@ -65,12 +113,13 @@ class MainPageFragment : Fragment() {
                 procesarLista(response)
             },
             Response.ErrorListener { error ->
-                //Toast.makeText(this, "Error: $error", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Error: $error", Toast.LENGTH_SHORT).show()
             }
         )
 
         requestQueue.add(request)
     }
+
 
     private fun procesarLista(response: JSONObject?) {
         if(response != null && response.getBoolean("exito")){
